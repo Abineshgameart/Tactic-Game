@@ -19,12 +19,6 @@ public class GridGenerator : MonoBehaviour
        GenerateGrid();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private void GenerateGrid()
     {
         if (gridPrefab == null)
