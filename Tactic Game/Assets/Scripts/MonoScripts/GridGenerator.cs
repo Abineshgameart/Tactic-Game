@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GridGenerator : MonoBehaviour
@@ -8,6 +9,8 @@ public class GridGenerator : MonoBehaviour
     private float gridSpace = 1f;
 
     [SerializeField] private GameObject gridPrefab;
+
+    private Dictionary<Vector3, >
 
     // Public
     
