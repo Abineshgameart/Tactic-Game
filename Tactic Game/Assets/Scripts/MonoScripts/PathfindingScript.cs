@@ -1,65 +1,128 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PathfindingScript : MonoBehaviour
 {
-    // Private
-    [SerializeField] private List<Vector3> gridToSearch;
-    [SerializeField] private List<Vector3> searchedGrids;
-    [SerializeField] private List<Vector3> finalPath;
+    // Public
+    public static PathfindingScript instance;
+
+    //Private
+    [SerializeField] private GridGenerator gridGenerator;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     
-    // Start is called before the first frame update
-    void Start()
+
+    public List<Node> AStarGeneratePath(Node start, Node end)
     {
+        List<Node> openList = new List<Node>();
+        HashSet<Node> closeList = new HashSet<Node>();
         
-    }
+        openList.Add(start);
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    private void FindPath(Vector3 startPos, Vector3 endPos)
-    {
-        searchedGrids = new List<Vector3>();
-        gridToSearch = new List<Vector3> { startPos };
-        finalPath = new List<Vector3>();
-
-        Grid startGrid = grid[startPos];
-        startGrid.gCost = 0;
-        startGrid.hCost = GetDistance(startPos, endPos);
-        startGrid.fCost = GetDistance(startPos, endPos);
-
-    }
-
-    private int GetDistance(Vector3 pos1, Vector3 pos2)
-    {
-        Vector3Int dist = new Vector3Int(Mathf.Abs((int)pos1.x - (int)pos2.x), Mathf.Abs((int)pos1.y - (int)pos2.y), Mathf.Abs((int)pos1.z - (int)pos2.z));
-        int lowest = Mathf.Min(dist.x, dist.z);
-        int highest = Mathf.Max(dist.x, dist.z);
-
-        int horizontalMovesRequired = highest - lowest;
-
-        return lowest * 10 + horizontalMovesRequired * 10;
-
-    }
-
-    private class Grid
-    {
-        public Vector3 position;
-        public int fCost = int.MaxValue;
-        public int gCost = int.MaxValue;
-        public int hCost = int.MaxValue;
-        public Vector3 connection;
-        public bool isobstacle;
-
-        public Grid(Vector3 pos)
+        while(openList.Count > 0)
         {
-            position = pos;
+            Node current = openList[0];
+
+            for(int i = 1; i < openList.Count; i++)
+            {
+                if (openList[i].fCost < current.fCost || (openList[i].fCost == current.fCost && openList[i].hCost < current.hCost)) {
+                    current = openList[i];
+                }
+            }
+
+            openList.Remove(current);
+            closeList.Add(current); 
+
+            if(current == end)
+            {
+                return RetracePath(start, end);
+            }
+            
+            foreach(Node neighbor in GetNeighbors(current))
+            {
+                if(!neighbor.walkable || closeList.Contains(neighbor))
+                {
+                    continue;
+                }
+
+                int newCostToNeighbor = current.gCost + GetDistance(current, neighbor);
+
+                if(newCostToNeighbor < neighbor.gCost || !openList.Contains(neighbor))
+                {
+                    neighbor.gCost = newCostToNeighbor;
+                    neighbor.hCost = GetDistance(neighbor, end);
+                    neighbor.parent = current;
+
+                    if(!openList.Contains(neighbor))
+                    {
+                        openList.Add(neighbor);
+                    }
+                }
+            }
         }
+
+        return null;
+    }
+
+    List<Node> RetracePath(Node start, Node end)
+    {
+        List<Node> path = new List<Node>();
+
+        Node currentNode = end;
+
+        while (currentNode != start)
+        {
+            path.Add(currentNode);
+            currentNode = currentNode.parent;  
+        }
+
+        path.Reverse();
+        return path;
+    }
+
+    List<Node> GetNeighbors(Node node)
+    {
+        List<Node> neighbors = new List<Node>();
+
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                // Skip the current node itself
+                if (x == 0 && y == 0)
+                    continue;
+
+                // Allow only 4 direction (no diagnals)
+                if (Mathf.Abs(x) + Mathf.Abs(y) == 2)
+                    continue;
+
+                int checkX = node.gridX + x;
+                int checkY = node.gridY + y;
+
+                if(checkX >= 0 && checkX < gridGenerator.gridHeight && checkY >= 0 && checkY < gridGenerator.gridWidth)
+                {
+                    neighbors.Add(gridGenerator.grids[checkX, checkY]);
+                }
+            }
+        }
+        return neighbors;
+    }
+
+    private int GetDistance(Node a, Node b)
+    {
+        int distanceX = Mathf.Abs(a.gridX - b.gridX);
+        int distanceY = Mathf.Abs(a.gridY - b.gridY);
+
+        if (distanceX > distanceY)
+        {
+            return 14 * distanceY + 10 * (distanceX - distanceY);
+        }
+
+        return 14 * distanceX + 10 * (distanceY - distanceX);
     }
 }
 

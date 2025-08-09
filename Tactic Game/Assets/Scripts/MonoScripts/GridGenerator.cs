@@ -4,22 +4,23 @@ using UnityEngine;
 public class GridGenerator : MonoBehaviour
 {
     // Private
-    private int gridHeight = 10;
-    private int gridWidth = 10;
-    private float gridSpace = 1f;
 
     [SerializeField] private GameObject gridPrefab;
+    [SerializeField] ObstacleInfo obstacleInfo;
+    private bool walkable = true;
 
-    private Dictionary<Vector3, >
 
     // Public
-    
+    public int gridHeight = 10;
+    public int gridWidth = 10;
+    public float gridSpace = 1f;
+    public Node[,] grids;
 
     
     // Start is called before the first frame update
     void Start()
     {
-       GenerateGrid();
+        GenerateGrid();
     }
 
     private void GenerateGrid()
@@ -29,6 +30,8 @@ public class GridGenerator : MonoBehaviour
             Debug.Log("Grid prefab not assigned.");
             return;
         }
+
+        grids = new Node[gridHeight, gridWidth];
 
         for (int i = 0; i < gridHeight; i++)
         {
@@ -45,6 +48,18 @@ public class GridGenerator : MonoBehaviour
                 GridInfo gridInfo = newGrid.GetComponent<GridInfo>();
                 gridInfo.PosX = newGridPosition.x;
                 gridInfo.PosY = newGridPosition.z;
+
+                if(obstacleInfo.obstacleTiles[i * gridWidth + j])
+                {
+                    walkable = false;
+                } 
+                else
+                {
+                    walkable = true;
+                }
+
+                grids[i, j] = new Node(walkable, i, j);
+
             }
         }
     }
