@@ -6,7 +6,7 @@ public class ObstacleManager : MonoBehaviour
     [SerializeField] ObstacleInfo obstacleInfo;
     private int obstacleLength = 10;
     private float obstacleSpace = 1f;
-    private float offsetY = 1f;
+    private float offsetY = 0.8f;
 
     [SerializeField] private GameObject obstaclePrefab;
 

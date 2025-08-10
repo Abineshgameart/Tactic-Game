@@ -5,10 +5,14 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     // Private
+    [SerializeField] EnemyAI enemyAI;
+    [SerializeField] private GameObject selectedPlane;
     private GameObject player;
     private float moveSpeed = 3f;
 
     private float gridspace = 1f;
+
+    private Animator animator;
     
     // Public
     public bool isMoving = false;
@@ -26,6 +30,7 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator MoveWithinPath(List<Node> path)
     {
         isMoving = true;
+        
 
         player = GameObject.FindGameObjectWithTag("Player");
         foreach (Node node in path)
@@ -41,6 +46,11 @@ public class PlayerMovement : MonoBehaviour
         }
 
         isMoving = false;
+        animator = player.GetComponent<Animator>();
+        animator.SetBool("move", false);
+        selectedPlane.SetActive(false);
+
+        enemyAI.startLocatingPlayer();
     }
     
 }

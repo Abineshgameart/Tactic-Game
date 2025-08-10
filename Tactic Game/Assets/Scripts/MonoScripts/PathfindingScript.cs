@@ -84,7 +84,7 @@ public class PathfindingScript : MonoBehaviour
         return path;
     }
 
-    List<Node> GetNeighbors(Node node)
+    public List<Node> GetNeighbors(Node node)
     {
         List<Node> neighbors = new List<Node>();
 
@@ -112,7 +112,7 @@ public class PathfindingScript : MonoBehaviour
         return neighbors;
     }
 
-    private int GetDistance(Node a, Node b)
+    public int GetDistance(Node a, Node b)
     {
         int distanceX = Mathf.Abs(a.gridX - b.gridX);
         int distanceY = Mathf.Abs(a.gridY - b.gridY);

@@ -1,32 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerGenerator : MonoBehaviour
 {
+    // Private
     [SerializeField] ObstacleInfo obstacleInfo;
     [SerializeField] GridGenerator gridGenerator;
     [SerializeField] private GameObject playerPrefab;
     private bool playerGenerated = false;
     private float offsetY = 1f;
-    
+
+    // Public
+    public int playerPosX = 0;
+    public int playerPosZ = 0;
+
     // Start is called before the first frame update
     void Start()
     {
-        GeneratePlayer();
+        Invoke("GeneratePlayer", 0.5f);
     }
 
     private void GeneratePlayer()
     {
-        int posX = 0;
-        int posZ = 0;
+        
 
         while (!playerGenerated)
         {
             
-            if(!obstacleInfo.obstacleTiles[posX * 10 + posZ])
+            if(!obstacleInfo.obstacleTiles[playerPosX * 10 + playerPosZ])
             {
-                Vector3 newPlayerPosition = new Vector3(posX * gridGenerator.gridSpace, offsetY, posZ * gridGenerator.gridSpace);
+                Vector3 newPlayerPosition = new Vector3(playerPosX * gridGenerator.gridSpace, offsetY, playerPosZ * gridGenerator.gridSpace);
 
                 GameObject newPlayer = Instantiate(playerPrefab, newPlayerPosition, Quaternion.identity);
 
@@ -34,8 +36,8 @@ public class PlayerGenerator : MonoBehaviour
                 return;
             }
 
-            posX = Random.Range(0, 10);
-            posZ = Random.Range(0, 10);
+            playerPosX = Random.Range(0, 10);
+            playerPosZ = Random.Range(0, 10);
 
         }
     }
