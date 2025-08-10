@@ -3,6 +3,6 @@ using UnityEngine;
 public class GridInfo : MonoBehaviour
 {
     // Public
-    public float PosX;
-    public float PosY;
+    public float PosX;  // Position X
+    public float PosY;  // Position Y
 }

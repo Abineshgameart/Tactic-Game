@@ -1,81 +1,97 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyAI : MonoBehaviour, IAI
 {
     [SerializeField] private PathfindingScript PathfindingScript;
-    [SerializeField] private InputHandler inputHandler;
-    private Animator animator;
-    private Vector3 playerPos;
-    private Vector3 enemyPos;
-    private Node playerNode;
-    private Node enemyNode;
-    private List<Node> enemyPath;
-    private GameObject enemy;
-    private float moveSpeed = 3f;
-    private float gridspace = 1f;
+    [SerializeField] private InputHandler inputHandler;  
+    private Animator animator;  // Enemy Animator
+    private Vector3 playerPos;  // Player Position
+    private Vector3 enemyPos;  // Enenmy Position
+    private Node playerNode;  // Player Position Node
+    private Node enemyNode;  // Enemy position Node
+    private List<Node> enemyPath;  // List Node for Enemy Path
+    private GameObject enemy;  // Enemy GameObject
+    private float moveSpeed = 3f;  // Movement Speed 
+    private float gridspace = 1f;  // Grid Space
 
+    // Method to start the Enemy Path finder with delay
     public void startLocatingPlayer()
     {
-        Invoke("EnemyPathFinder", 0.5f);
+        Invoke("EnemyPathFinder", 0.5f); // Invoking Method with delay
     }
 
     public void EnemyPathFinder()
     {
-        playerPos = GameObject.FindGameObjectWithTag("Player").transform.position;
-        enemyPos = GameObject.FindGameObjectWithTag("Enemy").transform.position;
+        playerPos = GameObject.FindGameObjectWithTag("Player").transform.position;  // Assinging player position
+        enemyPos = GameObject.FindGameObjectWithTag("Enemy").transform.position;  // Assigning enemy position
 
-        playerNode = inputHandler.GetNodeFromPos(playerPos);
-        enemyNode = inputHandler.GetNodeFromPos(enemyPos);
+        playerNode = inputHandler.GetNodeFromPos(playerPos); // Getting player node by Position
+        enemyNode = inputHandler.GetNodeFromPos(enemyPos);  // Getting enemy node by posision
 
-        List<Node> playerNeighbors = new List<Node>();
-        playerNeighbors = PathfindingScript.GetNeighbors(playerNode);
-        Node nearestNode = null;
+        List<Node> playerNeighbors = new List<Node>();  // Lsit for Player Neighbors
+        playerNeighbors = PathfindingScript.GetNeighbors(playerNode);  // Getting player Neighbors
+        Node nearestNode = null;  // assigning nearestNode null for now
+
+        // Comparing player neighbor postion with the enemy node pos and chooosing one.
         for(int i = 0; i < playerNeighbors.Count - 2; i++)
-        {
+        { 
+            //  distance between enemy node and neightbours
             int dist1 = PathfindingScript.GetDistance(enemyNode, playerNeighbors[i]);
-            int dist2 = PathfindingScript.GetDistance(enemyNode, playerNeighbors[i + 1]);
+            int dist2 = PathfindingScript.GetDistance(enemyNode, playerNeighbors[i + 1]); 
 
             if(dist1 < dist2)
             {
-                nearestNode = playerNeighbors[i];
+                nearestNode = playerNeighbors[i];  // if i is Less assign it to nearest
             } 
             else
             {
-                nearestNode = playerNeighbors[i + 1];
+                nearestNode = playerNeighbors[i + 1];  // or this one
             }
         }
+
+        //  Finding the shortest path by A * Algorithm feon enemy node to nearest node
         enemyPath = PathfindingScript.AStarGeneratePath(enemyNode, nearestNode);
-        if (enemyPath != null)
+        
+        // Is Enemy path is not null start moving
+        if (enemyPath != null)  
         {
+
+            // Calling movement Function
             EnemyMovement();
         }
     }
 
+    //  Method for enemy movement
     public void EnemyMovement()
     {
-        animator = GameObject.FindGameObjectWithTag("Enemy").GetComponent<Animator>();
-        animator.SetBool("enemyMove", true);
-        StartCoroutine(MoveWithinEnemyPath(enemyPath));
+        animator = GameObject.FindGameObjectWithTag("Enemy").GetComponent<Animator>(); // Getting enemy animator
+        animator.SetBool("enemyMove", true);  // Activating enemy animator
+        StartCoroutine(MoveWithinEnemyPath(enemyPath)); // starting coroutine for the smooth movements
         
     }
 
+    // IEnumerator for path movement
     private IEnumerator MoveWithinEnemyPath(List<Node> path)
     {
-        enemy = GameObject.FindGameObjectWithTag("Enemy");
+        enemy = GameObject.FindGameObjectWithTag("Enemy"); // Getting enemy gameobject by Tag
+        
+        // Taking Node itn the path
         foreach (Node node in path)
         {
-            Vector3 nextPos = new Vector3(node.gridX * gridspace, 1f, node.gridY * gridspace);
-            Debug.Log(nextPos);
+            Vector3 nextPos = new Vector3(node.gridX * gridspace, 1f, node.gridY * gridspace);  // next position for the enemy
 
-            while (Vector3.Distance(enemy.transform.position, nextPos) > 0.05f)
+            //  checkin the distance with the condition, which is greater thea 0.05f 
+            while (Vector3.Distance(enemy.transform.position, nextPos) > 0.05f) 
             {
+                // Moving the enemy towards next position
                 enemy.transform.position = Vector3.MoveTowards(enemy.transform.position, nextPos, moveSpeed * Time.deltaTime);
-                yield return null;
+                yield return null;  // returning null
             }
         }
 
-        animator.SetBool("enemyMove", false);
+        animator.SetBool("enemyMove", false); // Deactivating the animation.
     }
 }
