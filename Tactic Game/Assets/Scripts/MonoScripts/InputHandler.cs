@@ -8,6 +8,7 @@ public class InputHandler : MonoBehaviour
     [SerializeField] private AudioManager audioManager;  // Audio Manager scipt
     [SerializeField] private GridGenerator gridGenerator;  // gridGenerator Script
     [SerializeField] private ObstacleInfo obstacleInfo;  // Obstacle Info Script
+    [SerializeField] private EnemyAI enemyAI;  // Enemy AI Script
     private Animator animator;  // For Player Animator
 
     [SerializeField] private GameObject hoverPlanePrefab; // hover Plane Prefab
@@ -60,8 +61,8 @@ public class InputHandler : MonoBehaviour
                 posY_txt.text = "Pos Y: " + gridInfo.PosY.ToString();
             }
             
-            // If player is not Moving | and not a obstacje | and also not a enenmy
-            if(!playerMovement.isMoving && !obstacleInfo.obstacleTiles[(int)gridInfo.PosX * 10 + (int)gridInfo.PosY])
+            // If player is not Moving | and not a obstacje | and also not a enenmy | And enemy is not moving
+            if(!playerMovement.isMoving && !obstacleInfo.obstacleTiles[(int)gridInfo.PosX * 10 + (int)gridInfo.PosY] && !enemyAI.isenemyMoving)
             {
                 mousehoverPlane.SetActive(true);  // active mouseHoverPlane.
                 Vector3 hitGridPos = hit.collider.gameObject.transform.position;  // Hitted Grid position

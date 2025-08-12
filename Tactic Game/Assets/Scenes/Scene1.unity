@@ -205,8 +205,7 @@ MonoBehaviour:
   audioManager: {fileID: 1666055709}
   gridGenerator: {fileID: 45446466}
   obstacleInfo: {fileID: 11400000, guid: b673ada562bcfa34fa8e76dc6d2c6fdf, type: 2}
-  animator: {fileID: 3149556615760787962, guid: b0e671291a9d48047a7bcc4912151e22,
-    type: 3}
+  enemyAI: {fileID: 1625424444}
   hoverPlanePrefab: {fileID: 2115702248516662070, guid: e583e11e998cb1e438e45d3e12bddc73,
     type: 3}
   selectedPlane: {fileID: 745807284}
@@ -1766,6 +1765,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PathfindingScript: {fileID: 406128843}
   inputHandler: {fileID: 107337532}
+  isenemyMoving: 0
 --- !u!1 &1666055708
 GameObject:
   m_ObjectHideFlags: 0
