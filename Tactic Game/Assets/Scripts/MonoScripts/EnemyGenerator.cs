@@ -3,12 +3,14 @@ using UnityEngine;
 public class EnemyGenerator : MonoBehaviour
 {
     // Private
-    [SerializeField] ObstacleInfo obstacleInfo; // Getting ScriptableObject obstacle Info
-    [SerializeField] GridGenerator gridGenerator; // Getting Grid Genenrator Script
-    [SerializeField] PlayerGenerator playerGenerator;   // Getting player Genenrator Script
-    [SerializeField] PlayerMovement playerMovement;  // Getting player Movement Script
+    [SerializeField] private ObstacleInfo obstacleInfo; // Getting ScriptableObject obstacle Info
+    [SerializeField] private GridGenerator gridGenerator; // Getting Grid Genenrator Script
+    [SerializeField] private PlayerGenerator playerGenerator;   // Getting player Genenrator Script
+    [SerializeField] private PlayerMovement playerMovement;  // Getting player Movement Script
+    [SerializeField] private InputHandler inputHandler;
     [SerializeField] private GameObject enemyPrefab;  // Getting enemy Prefab
-    private bool enemyGenerated = false;  // to represent the status, that the enemy is geneted or not
+    Node enemyGeneratedGridNode;
+    private bool enemyGenerated = false;  // to represent the status, that the enemy is generated or not
     private float offsetY = 1f;  // Y unit offset
 
     // Start is called before the first frame update
@@ -44,11 +46,19 @@ public class EnemyGenerator : MonoBehaviour
 
                 // Assigning name as Enemy
                 newEnemy.name = "Enemy";
+                // To represent enemy generated
+                enemyGenerated = true;
+
+                enemyGeneratedGridNode = inputHandler.GetNodeFromPos(newEnemyPosition);
+                enemyGeneratedGridNode.walkable = false;
+
                 return;
             }
 
             posX = Random.Range(0, 10);  //  Ranzom number of X
             posZ = Random.Range(0, 10);  // Random number o Y
+
+            
 
         }
     }

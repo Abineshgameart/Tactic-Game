@@ -1734,6 +1734,7 @@ MonoBehaviour:
   gridGenerator: {fileID: 45446466}
   playerGenerator: {fileID: 991050418}
   playerMovement: {fileID: 991050419}
+  inputHandler: {fileID: 107337532}
   enemyPrefab: {fileID: 4356187287777089915, guid: 1c4b9f6b85e36cd488c2c2b51c8a921c,
     type: 3}
 --- !u!4 &1625424443
