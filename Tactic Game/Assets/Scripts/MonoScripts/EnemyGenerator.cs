@@ -7,9 +7,9 @@ public class EnemyGenerator : MonoBehaviour
     [SerializeField] private GridGenerator gridGenerator; // Getting Grid Genenrator Script
     [SerializeField] private PlayerGenerator playerGenerator;   // Getting player Genenrator Script
     [SerializeField] private PlayerMovement playerMovement;  // Getting player Movement Script
-    [SerializeField] private InputHandler inputHandler;
+    [SerializeField] private InputHandler inputHandler; // Getting Input Handler
     [SerializeField] private GameObject enemyPrefab;  // Getting enemy Prefab
-    Node enemyGeneratedGridNode;
+    Node enemyGeneratedGridNode; // Enemy generated grid node
     private bool enemyGenerated = false;  // to represent the status, that the enemy is generated or not
     private float offsetY = 1f;  // Y unit offset
 
@@ -49,8 +49,8 @@ public class EnemyGenerator : MonoBehaviour
                 // To represent enemy generated
                 enemyGenerated = true;
 
-                enemyGeneratedGridNode = inputHandler.GetNodeFromPos(newEnemyPosition);
-                enemyGeneratedGridNode.walkable = false;
+                enemyGeneratedGridNode = inputHandler.GetNodeFromPos(newEnemyPosition);  // Getting enemy generated grid node
+                enemyGeneratedGridNode.walkable = false; // making that grid wakable false
 
                 return;
             }
