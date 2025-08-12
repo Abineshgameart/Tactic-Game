@@ -102,8 +102,8 @@ public class EnemyAI : MonoBehaviour, IAI
         }
 
         animator.SetBool("enemyMove", false); // Deactivating the animation.
-        playerNearestNode.walkable = false;
-        isenemyMoving = false;
+        playerNearestNode.walkable = false;  // making the enemy reaching grid tile walkable false
+        isenemyMoving = false; // after enemy reached
     }
 }
 

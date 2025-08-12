@@ -8,7 +8,7 @@ public class InputHandler : MonoBehaviour
     [SerializeField] private AudioManager audioManager;  // Audio Manager scipt
     [SerializeField] private GridGenerator gridGenerator;  // gridGenerator Script
     [SerializeField] private ObstacleInfo obstacleInfo;  // Obstacle Info Script
-    [SerializeField] private EnemyAI enemyAI;
+    [SerializeField] private EnemyAI enemyAI;  // Enemy AI Script
     private Animator animator;  // For Player Animator
 
     [SerializeField] private GameObject hoverPlanePrefab; // hover Plane Prefab
