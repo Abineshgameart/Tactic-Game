@@ -25,11 +25,14 @@ public class EnemyAI : MonoBehaviour, IAI
     // Method to start the Enemy Path finder with delay
     public void startLocatingPlayer()
     {
+        isenemyMoving = true;  // When Enemy Start to make move 
         Invoke("EnemyPathFinder", 0.5f); // Invoking Method with delay
     }
 
     public void EnemyPathFinder()
     {
+        
+
         playerPos = GameObject.FindGameObjectWithTag("Player").transform.position;  // Assinging player position
         enemyPos = GameObject.FindGameObjectWithTag("Enemy").transform.position;  // Assigning enemy position
 
@@ -83,7 +86,7 @@ public class EnemyAI : MonoBehaviour, IAI
     // IEnumerator for path movement
     private IEnumerator MoveWithinEnemyPath(List<Node> path)
     {
-        isenemyMoving = true;
+        
 
         enemy = GameObject.FindGameObjectWithTag("Enemy"); // Getting enemy gameobject by Tag
         
