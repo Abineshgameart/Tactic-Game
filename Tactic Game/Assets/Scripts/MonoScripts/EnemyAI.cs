@@ -5,17 +5,22 @@ using UnityEngine;
 
 public class EnemyAI : MonoBehaviour, IAI
 {
+    // Private
     [SerializeField] private PathfindingScript PathfindingScript;
-    [SerializeField] private InputHandler inputHandler;  
+    [SerializeField] private InputHandler inputHandler;
     private Animator animator;  // Enemy Animator
     private Vector3 playerPos;  // Player Position
     private Vector3 enemyPos;  // Enenmy Position
     private Node playerNode;  // Player Position Node
     private Node enemyNode;  // Enemy position Node
+    Node playerNearestNode;  // 
     private List<Node> enemyPath;  // List Node for Enemy Path
     private GameObject enemy;  // Enemy GameObject
     private float moveSpeed = 3f;  // Movement Speed 
     private float gridspace = 1f;  // Grid Space
+    
+    // Public
+    public bool isenemyMoving = false;
 
     // Method to start the Enemy Path finder with delay
     public void startLocatingPlayer()
@@ -29,11 +34,13 @@ public class EnemyAI : MonoBehaviour, IAI
         enemyPos = GameObject.FindGameObjectWithTag("Enemy").transform.position;  // Assigning enemy position
 
         playerNode = inputHandler.GetNodeFromPos(playerPos); // Getting player node by Position
-        enemyNode = inputHandler.GetNodeFromPos(enemyPos);  // Getting enemy node by posision
+        enemyNode = inputHandler.GetNodeFromPos(enemyPos);  // Getting enemy node by position
+
+        enemyNode.walkable = true; // setting walkable true before moving
 
         List<Node> playerNeighbors = new List<Node>();  // Lsit for Player Neighbors
         playerNeighbors = PathfindingScript.GetNeighbors(playerNode);  // Getting player Neighbors
-        Node nearestNode = null;  // assigning nearestNode null for now
+        playerNearestNode = null;  // assigning nearestNode null for now
 
         // Comparing player neighbor postion with the enemy node pos and chooosing one.
         for(int i = 0; i < playerNeighbors.Count - 2; i++)
@@ -44,16 +51,16 @@ public class EnemyAI : MonoBehaviour, IAI
 
             if(dist1 < dist2)
             {
-                nearestNode = playerNeighbors[i];  // if i is Less assign it to nearest
+                playerNearestNode = playerNeighbors[i];  // if i is Less assign it to nearest
             } 
             else
             {
-                nearestNode = playerNeighbors[i + 1];  // or this one
+                playerNearestNode = playerNeighbors[i + 1];  // or this one
             }
         }
 
-        //  Finding the shortest path by A * Algorithm feon enemy node to nearest node
-        enemyPath = PathfindingScript.AStarGeneratePath(enemyNode, nearestNode);
+        //  Finding the shortest path by A * Algorithm from enemy node to nearest node
+        enemyPath = PathfindingScript.AStarGeneratePath(enemyNode, playerNearestNode);
         
         // Is Enemy path is not null start moving
         if (enemyPath != null)  
@@ -76,6 +83,8 @@ public class EnemyAI : MonoBehaviour, IAI
     // IEnumerator for path movement
     private IEnumerator MoveWithinEnemyPath(List<Node> path)
     {
+        isenemyMoving = true;
+
         enemy = GameObject.FindGameObjectWithTag("Enemy"); // Getting enemy gameobject by Tag
         
         // Taking Node itn the path
@@ -93,5 +102,9 @@ public class EnemyAI : MonoBehaviour, IAI
         }
 
         animator.SetBool("enemyMove", false); // Deactivating the animation.
+        playerNearestNode.walkable = false;
+        isenemyMoving = false;
     }
 }
+
+
